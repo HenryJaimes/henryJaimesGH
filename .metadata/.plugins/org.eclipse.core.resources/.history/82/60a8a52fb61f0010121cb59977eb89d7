@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:sftp="http://www.mulesoft.org/schema/mule/sftp" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/sftp http://www.mulesoft.org/schema/mule/sftp/current/mule-sftp.xsd">
+	<sftp:config name="SFTP_Config" doc:name="SFTP Config" doc:id="934c2fdb-85f2-4f43-b16b-12a9d502e802" >
+		<sftp:connection workingDir="/mule" host="localhost" username="tester" password="password" />
+	</sftp:config>
+	<flow name="sftpdemonewworkspaceFlow" doc:id="a4f975e2-6f9b-456a-bf5a-54fac5402ba7" >
+		<sftp:listener doc:name="On New or Updated File" doc:id="d3813472-ed05-49cb-9a49-d32d365f3c0f" config-ref="SFTP_Config" directory="input" autoDelete="true" moveToDirectory="archive" renameTo='#[splitBy{attributes.filename, "."}[0] ++ "-" ++ now() as DateTime as String {format: "uuuu-MM-dd-KK-mm-ss-a"} ++ "." ++ splitBy{attributes.filename, "."}[1]]'>
+			<scheduling-strategy >
+				<fixed-frequency />
+			</scheduling-strategy>
+		</sftp:listener>
+		<logger level="INFO" doc:name="Logger" doc:id="8bf8d1f3-1412-47d0-a48d-391afaad3513" message="#[output application/json&#10;---&#10;payload]"/>
+		<logger level="INFO" doc:name="Logger" doc:id="2110b7e6-8942-4e61-814f-3bc82e3bb889" message="File Processed"/>
+	</flow>
+</mule>

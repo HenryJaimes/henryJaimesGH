@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename resource &apos;sftp/src/main/mule/testmule.xml&apos; to &apos;sftp.xml&apos;" description="Rename resource &apos;testmule.xml&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="src/main/mule/testmule.xml" name="sftp.xml" stamp="1745514382971" updateReferences="true"/>
+</session>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:sftp="http://www.mulesoft.org/schema/mule/sftp"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/sftp http://www.mulesoft.org/schema/mule/sftp/current/mule-sftp.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<sftp:config name="SFTP_Config" doc:name="SFTP Config" doc:id="a2389026-fd38-48dd-abe1-c298fcf002ac" >
+		<sftp:connection workingDir="/mule" host="localhost" username="tester" password="password" />
+	</sftp:config>
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="41981a29-b1c0-4187-a330-c6aea111a95f" basePath="/fileFromSftp" >
+		<http:listener-connection host="localhost" port="8191" />
+	</http:listener-config>
+	<flow name="OnNewOrUpdateFileFlow" doc:id="cad9c771-5fa4-4a81-b041-e77ae6a31fe7" initialState="stopped">
+		<sftp:listener doc:name="On New or Updated File" doc:id="b2241657-6131-4690-9b3f-e89332f3dd57" config-ref="SFTP_Config" autoDelete="true" moveToDirectory="archive" renameTo='#["hola.csv"]' directory="input">
+			<scheduling-strategy >
+				<fixed-frequency />
+			</scheduling-strategy>
+		</sftp:listener>
+		<logger level="INFO" doc:name="Logger" doc:id="ae17dd2d-b294-43de-98f4-21065c394345" message="#[output application/json&#10;---&#10;payload]" />
+		<logger level="INFO" doc:name="Logger1" doc:id="22a054e2-4711-4343-af08-7a7a8ec2f894" message="File Processed" />
+	</flow>
+	<flow name="reaaAndMooveFileFlow" doc:id="04e32816-e96f-4d25-bf78-fb7a844d15d1" initialState="stopped">
+		<http:listener doc:name="Listener" doc:id="23c3f9fd-be00-4812-a62d-97fcf02755ef" config-ref="HTTP_Listener_config" path="/read"/>
+		<sftp:read doc:name="Read" doc:id="155d0ea8-d46d-4fef-bec5-0da07543b018" config-ref="SFTP_Config" path="input/members.csv"/>
+		<logger level="INFO" doc:name="Logger" doc:id="00d454a4-5582-449e-87b9-6369607bdb5f" message="#[output application/json&#10;---&#10;payload]"/>
+		<logger level="INFO" doc:name="Logger" doc:id="b021eef5-1ada-4fe2-ac6e-5f24a7406ef5" message="File Processesd"/>
+		<sftp:move doc:name="Move" doc:id="cb4e352f-4b17-48c9-8e3e-a760d4b8af90" config-ref="SFTP_Config" sourcePath="input/members.csv" targetPath="archive" renameTo='"movedFile.csv"'/>
+	</flow>
+	<flow name="writeFile" doc:id="17464ab8-9651-4fe9-8ed4-3d8f377abdf1" >
+		<http:listener doc:name="Listener" doc:id="6117f306-35a6-47fe-9016-010ff2df1547" config-ref="HTTP_Listener_config" path="/write" allowedMethods="POST">
+		</http:listener>
+		<logger level="INFO" doc:name="Logger" doc:id="d186b1b4-f978-407b-93eb-394581e8bb4d" message="#[payload]"/>
+		<set-variable value='#[%dw 2.0&#10;output application/java&#10;---&#10;"members-" &#10;++ now() as DateTime as String {format: "uuuu-MM-dd-KK-a"} &#10;++ ".csv"]' doc:name="Set Variable" doc:id="a2bc7fa2-851c-451b-a39f-247986a2e835" variableName="fileName"/>
+		<choice doc:name="Choice" doc:id="e691f161-bf7b-4443-a3bd-25b6754ddea8" >
+			<when expression='#[attributes.queryParams.firstRecords=="true"]'>
+				<ee:transform doc:name="Transform Message" doc:id="94c933a9-f6b0-451b-9b0a-db521f1b4ed4" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/csv
+---
+payload]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</when>
+			<otherwise >
+				<ee:transform doc:name="Transform Message" doc:id="0df4c3fa-c261-4d77-a90c-bc00ad9bd327" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/csv header=false
+---
+payload]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</otherwise>
+		</choice>
+		<sftp:write doc:name="Write" doc:id="72dc8f23-c4ca-4c3f-b15f-82e4b3a40eaa" config-ref="SFTP_Config" path='#["output/" ++ vars.fileName]' mode="CREATE_NEW"/>
+		<logger level="INFO" doc:name="Logger" doc:id="392bcfc7-a8b6-4940-8799-f18521882dc2" message="File Writing Completed"/>
+	</flow>
+</mule>

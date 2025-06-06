@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:sftp="http://www.mulesoft.org/schema/mule/sftp" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/sftp http://www.mulesoft.org/schema/mule/sftp/current/mule-sftp.xsd">
+	<sftp:config name="SFTP_Config" doc:name="SFTP Config" doc:id="934c2fdb-85f2-4f43-b16b-12a9d502e802" >
+		<sftp:connection workingDir="/mule" host="localhost" username="tester" password="password" />
+	</sftp:config>
+	<flow name="sftpdemonewworkspaceFlow" doc:id="a4f975e2-6f9b-456a-bf5a-54fac5402ba7" >
+		<sftp:listener doc:name="On New or Updated File" doc:id="d3813472-ed05-49cb-9a49-d32d365f3c0f" config-ref="SFTP_Config" directory="input" autoDelete="true" moveToDirectory="C:\Users\HenryStewardJaimesGa\AnypointStudio\studio-workspace">
+			<scheduling-strategy >
+				<fixed-frequency />
+			</scheduling-strategy>
+		</sftp:listener>
+	</flow>
+</mule>

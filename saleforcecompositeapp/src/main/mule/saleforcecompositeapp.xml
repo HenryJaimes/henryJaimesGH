@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:salesforce-composite="http://www.mulesoft.org/schema/mule/salesforce-composite" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/salesforce-composite http://www.mulesoft.org/schema/mule/salesforce-composite/current/mule-salesforce-composite.xsd">
+	<salesforce-composite:composite-config name="Salesforce_Composite_Config" doc:name="Salesforce Composite Config" doc:id="d7dc40bc-f2cf-4fcf-8426-551545546d29" >
+		<salesforce-composite:config-with-oauth-connection >
+			<salesforce-composite:oauth-authorization-code consumerKey="3MVG9rZjd7MXFdLju4nF9e3j43WytpZgNbG5J46kGIOkcUUC_B_wODPTSwQtXrLtFa4XtzZ_iTo5_rDqKH_LF" consumerSecret="64734A43601FE6AB229728617CA5FC404089FD3C9D4104DC576968A4BCADB306" resourceOwnerId="#[vars.resourceId]"/>
+			<salesforce-composite:oauth-callback-config listenerConfig="HTTP_Listener_config" callbackPath="/oauth2callback" authorizePath="/authorize" externalCallbackUrl="http://localhost:8082/oauth2callback" />
+		</salesforce-composite:config-with-oauth-connection>
+	</salesforce-composite:composite-config>
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="e51ee2fa-9607-422b-b448-44aff64a5794" >
+		<http:listener-connection host="0.0.0.0" port="8082" />
+	</http:listener-config>
+	<flow name="saleforcecompositeappFlow" doc:id="e42865ea-a077-464e-85a3-c2e51983147c" >
+		<http:listener doc:name="Listener" doc:id="65d46d62-308b-4cd4-a6d9-015743a23b96" config-ref="HTTP_Listener_config" path="/test"/>
+	</flow>
+</mule>
