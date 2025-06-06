@@ -15,6 +15,7 @@
             </http:error-response>
         </http:listener>
         <apikit:router config-ref="data-cloud-integration-api-config" />
+        <logger level="INFO" doc:name="Logger" doc:id="ae0f5fed-360a-49c2-8015-d01ac7693b95" message="logger de pruehba"/>
 		<error-handler>
             <on-error-propagate type="APIKIT:BAD_REQUEST">
                 <ee:transform doc:name="Transform Message">
