@@ -2492,6 +2492,7 @@ java.lang.IllegalArgumentException: Argument cannot be null
 !ENTRY org.mule.tooling.maven 1 0 2025-06-05 16:46:10.435
 !MESSAGE  *** 3733 EmbeddedMavenRunner [configuration=DefaultMavenRunnerConfiguration [externalInstallation=false, mavenInstallationHome=E:\apache-maven-3.8.6, mavenOpts=]]
 
+<<<<<<< HEAD
 !ENTRY org.mule.tooling.maven 1 0 2025-06-10 15:21:19.608
 !MESSAGE  *** 36059 EmbeddedMavenRunner [configuration=DefaultMavenRunnerConfiguration [externalInstallation=false, mavenInstallationHome=E:\apache-maven-3.8.6, mavenOpts=]]
 
@@ -2587,3 +2588,10 @@ Caused by: java.net.SocketException: Connection reset
 
 !ENTRY org.mule.tooling.maven 1 0 2025-06-10 16:17:09.613
 !MESSAGE  *** 3051 EmbeddedMavenRunner [configuration=DefaultMavenRunnerConfiguration [externalInstallation=false, mavenInstallationHome=E:\apache-maven-3.8.6, mavenOpts=]]
+=======
+!ENTRY org.mule.tooling.core 1 0 2025-06-08 18:31:13.881
+!MESSAGE Checking updates in Exchange for: [org.mule.connectors:mule-sftp-connector, org.mule.modules:mule-apikit-module, com.mulesoft.connectors:mule-salesforce-composite-connector, org.mule.connectors:mule-sockets-connector, org.mule.connectors:mule-http-connector]
+
+!ENTRY org.mule.tooling.core 1 0 2025-06-08 18:31:27.350
+!MESSAGE Check finished: there are updates for some Mule Modules
+>>>>>>> master
